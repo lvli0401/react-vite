@@ -6,6 +6,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import { createHtmlPlugin } from 'vite-plugin-html'
 import viteCompression from 'vite-plugin-compression'
 import eslintPlugin from 'vite-plugin-eslint'
+import vitePluginImp from 'vite-plugin-imp'
 
 // @see: https://vitejs.dev/config/
 export default defineConfig((mode: ConfigEnv): UserConfig => {
@@ -18,7 +19,8 @@ export default defineConfig((mode: ConfigEnv): UserConfig => {
 		resolve: {
 			alias: {
 				'@': resolve(__dirname, './src')
-			}
+			},
+			extensions: ['.js', '.ts', '.jsx', '.tsx', '.json']
 		},
 		// global css
 		css: {
@@ -70,7 +72,15 @@ export default defineConfig((mode: ConfigEnv): UserConfig => {
 					threshold: 10240,
 					algorithm: 'gzip',
 					ext: '.gz'
-				})
+				}),
+			vitePluginImp({
+				libList: [
+					{
+						libName: 'antd',
+						style: name => `antd/es/${name}/style`
+					}
+				]
+			})
 		],
 		esbuild: {
 			pure: viteEnv.VITE_DROP_CONSOLE ? ['console.log', 'debugger'] : []
